@@ -230,10 +230,10 @@ module IRuby
       end
 
       type { Gnuplot::Plot }
-      format 'image/svg+xml' do |obj|
+      format 'image/png' do |obj|
         Tempfile.open('plot') do |f|
           terminal = obj['terminal'].to_s.split(' ')
-          terminal[0] = 'svg'
+          terminal[0] = 'png'
           terminal << 'enhanced' unless terminal.include?('noenhanced')
           obj.terminal terminal.join(' ')
           obj.output f.path
