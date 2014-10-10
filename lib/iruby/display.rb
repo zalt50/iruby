@@ -233,8 +233,9 @@ module IRuby
       format 'image/png' do |obj|
         Tempfile.open('plot') do |f|
           terminal = obj['terminal'].to_s.split(' ')
-          terminal[0] = 'png'
+          terminal[0] = 'pngcairo'
           terminal << 'enhanced' unless terminal.include?('noenhanced')
+          terminal << 'transparent' unless terminal.include?('notransparent')
           obj.terminal terminal.join(' ')
           obj.output f.path
           Gnuplot.open do |io|
