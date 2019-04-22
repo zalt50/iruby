@@ -8,15 +8,20 @@ module IRuby
       "$$\\left(\\begin{array}{#{x}} #{y} \\end{array}\\right)$$"
     end
 
-    def matrix(m, row_count, column_count)
-      s = "$$\\left(\\begin{array}{#{'c' * column_count}}\n"
-      (0...row_count).each do |i|
+    def matrix(m, row_count, column_count, maxrows: 15, maxcols: 15)
+      raise ArgumentError, 'Invalid :maxrows' if maxrows && maxrows < 3
+      raise ArgumentError, 'Invalid :maxcols' if maxcols && maxcols < 3
+
+      s = "$$\\left(\\begin{array}{#{'c' * [column_count, maxcols + 1].min}}\n"
+      (0...[row_count, maxrows].min).each do |i|
         s << '  ' << m[i,0].to_s
-        (1...column_count).each do |j|
+        (1...[column_count, maxcols].min).each do |j|
           s << '&' << m[i,j].to_s
         end
+        s << '&\\cdots' if row_count > maxrows
         s << "\\\\\n"
       end
+      s << '  \\vdots' << '&\\vdots' * (maxcols - 1) << "&\\ddots\\\\\n" if column_count > maxcols
       s << "\\end{array}\\right)$$"
     end
   end
