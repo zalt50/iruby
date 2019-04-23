@@ -2,9 +2,11 @@ module IRuby
   module LaTeX
     extend self
 
-    def vector(v)
-      x = 'c' * v.size
-      y = v.map(&:to_s).join(' & ')
+    def vector(v, maxsize: 15)
+      raise ArgumentError, 'Invalid :maxsize' if maxsize && maxsize < 3
+
+      x = 'c' * [v.size, maxsize + 1].min
+      y = v.size <= maxsize ? v.map(&:to_s).join(' & ') : v[0..maxsize - 1].map(&:to_s).join(' & ') + ' & \\cdots'
       "$$\\left(\\begin{array}{#{x}} #{y} \\end{array}\\right)$$"
     end
 
